@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const productsController = require("../controllers/productsController");
-/* GET users listing. */
+
 router.get("/", productsController.getAll);
 router.get("/categories", productsController.getCategories);
 router.get("/:id", productsController.getById);
