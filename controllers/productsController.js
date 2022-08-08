@@ -2,7 +2,16 @@ const productsModel = require("../models/productsModel");
 module.exports = {
   getAll: async function (req, res, next) {
     try {
-      const products = await productsModel.find().populate("category");
+      let queryFind = {};
+      if (req.query.buscar) {
+        queryFind = {
+          name: { $regex: ".*" + req.query.buscar + ".*", $options: "i" },
+        };
+      }
+      const products = await productsModel
+        .find({ destacado: true })
+        .select("name price")
+        .sort({ price: -1, name: 1 });
       res.status(200).json(products);
     } catch (e) {
       console.log(e);
@@ -14,7 +23,10 @@ module.exports = {
   getById: async function (req, res, next) {
     console.log(req.params.id);
     try {
-      const product = await productsModel.findById(req.params.id);
+      const product = await productsModel
+        .findById(req.params.id)
+        .populate("category")
+        .select("name price code description");
       res.status(200).json(product);
     } catch (e) {
       console.log(e);

@@ -1,4 +1,7 @@
 const usersModel = require("../models/usersModel");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 module.exports = {
   getAll: async function (req, res, next) {
     try {
@@ -55,6 +58,32 @@ module.exports = {
       res.status(200).json(document);
     } catch (e) {
       console.log(e);
+    }
+  },
+  login: async function (req, res, next) {
+    try {
+      const user = await usersModel.findOne({ email: req.body.email });
+      if (!user) {
+        res.json({ message: "Wrong Email" });
+        return;
+      }
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        const token = jwt.sign(
+          { userId: user._id, rol: "admin" },
+          req.app.get("secretKey"),
+          {
+            expiresIn: "1h",
+          }
+        );
+        res.status(201).json({ token });
+      } else {
+        res.json({ message: "Wrong Password" });
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+      // res.json(e.message)
+      next(e);
     }
   },
 };
