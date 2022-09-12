@@ -8,14 +8,16 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
-const cors = require("cors")
+const cors = require("cors");
 
 const corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+  origin: "*",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 var app = express();
+
+app.use(cors("*"));
 
 app.set("secretKey", "appNode");
 
